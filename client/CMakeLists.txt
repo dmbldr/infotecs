@@ -1,8 +1,19 @@
 cmake_minimum_required(VERSION 3.8)
 project(client)
+SET(CMAKE_CXX_FLAGS -pthread)
 
-set(CMAKE_CXX_STANDARD 14)
+set(SOURCES
+        main.cpp
+        threadsafe_filework.cpp
+)
+set(HEADERS
+        threadsafe_filework.h
+)
 
-add_subdirectory(threadsafe_filework)
-add_subdirectory(joining_thread)
-add_subdirectory(main)
+add_executable(client ${SOURCES} ${HEADERS})
+
+set_target_properties(
+        client PROPERTIES
+        CXX_STANDARD 14
+        CXX_STANDARD_REQUIRED ON
+)
