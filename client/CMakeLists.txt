@@ -5,10 +5,10 @@ SET(CMAKE_CXX_FLAGS -pthread)
 set(SOURCES
         main.cpp
         threadsafe_filework.cpp
-)
+        processor.cpp)
 set(HEADERS
         threadsafe_filework.h
-)
+        processor.h)
 
 add_executable(client ${SOURCES} ${HEADERS})
 
