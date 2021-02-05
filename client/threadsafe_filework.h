@@ -15,7 +15,7 @@ public:
 
     void push(const std::string& msg);
     std::string wait_and_pop();
-    bool empty() const;
+    //bool empty() const;
 
     threadsafe_filework(const threadsafe_filework&) = delete;
     threadsafe_filework(threadsafe_filework&&) = delete;
@@ -25,4 +25,5 @@ private:
     mutable std::mutex _mtx;
     std::condition_variable _del_cond;
     std::string _file_name;
+    bool empty = true;
 };
