@@ -8,7 +8,7 @@ set(SOURCES
         processor.cpp)
 set(HEADERS
         threadsafe_filework.h
-        processor.h)
+        processor.h exit_exception.h)
 
 add_executable(client ${SOURCES} ${HEADERS})
 

@@ -3,13 +3,16 @@
 #include <iostream>
 #include <stdexcept>
 #include <algorithm>
+#include <cctype>
 
-void processor::run_in_process() {
+void processor::run_in_process() noexcept {
     while(true) {
-        std::string msg = read_message();
-        //TODO: класс исключение означающий завершение работы
-        if(msg == "exit") break;
         try {
+            std::string msg = read_message();
+            if(msg == "exit") {
+                _fworker.push("exit");
+                break;
+            }
             if(!check_size(msg)) throw std::invalid_argument("Message more than 64");
             if(!check_num(msg)) throw std::invalid_argument("Only numbers");
             std::sort(msg.rbegin(), msg.rend());
@@ -18,6 +21,22 @@ void processor::run_in_process() {
         }
         catch (const std::exception& e) {
             std::cerr << e.what() << "\n";
+        }
+    }
+}
+
+void processor::run_out_process() noexcept{
+    while(true) {
+        try {
+            std::string msg = _fworker.wait_and_pop();
+            if(msg == "exit") {
+                break;
+            }
+            std::cout << msg << '\n';
+            unsigned sum = get_sum(msg);
+        }
+        catch (const std::exception& e) {
+            std::cerr << e.what() << '\n';
         }
     }
 }
@@ -48,5 +67,13 @@ std::string processor::read_message() {
     std::string res;
     std::cin >> res;
     std::cin.ignore(32767,  '\n');
+    return res;
+}
+
+unsigned processor::get_sum(const std::string &msg) {
+    unsigned res = 0;
+    for(char c : msg) {
+        if(std::isdigit(static_cast<unsigned char>(c))) res += static_cast<unsigned>(c) - 48;
+    }
     return res;
 }
