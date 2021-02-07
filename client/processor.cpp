@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <cctype>
 
+#include <csignal>
+
 void processor::run_in_process() noexcept {
     while(true) {
         try {
@@ -26,18 +28,26 @@ void processor::run_in_process() noexcept {
 }
 
 void processor::run_out_process() noexcept{
-    while(true) {
-        try {
-            std::string msg = _fworker.wait_and_pop();
-            if(msg == "exit") {
-                break;
+    try {
+        _net.connect_with_server();
+        while (true) {
+            try {
+                std::string msg = _fworker.wait_and_pop();
+                if (msg == "exit") {
+                    break;
+                }
+                std::cout << msg << '\n';
+                _net.try_send(std::to_string(get_sum(msg)));
+
             }
-            std::cout << msg << '\n';
-            unsigned sum = get_sum(msg);
+            catch (const std::exception &e) {
+                std::cerr << e.what() << '\n';
+            }
         }
-        catch (const std::exception& e) {
-            std::cerr << e.what() << '\n';
-        }
+    }
+    catch (const std::exception& e) {
+        std::cerr << e.what() << '\n';
+        raise(SIGINT);
     }
 }
 
