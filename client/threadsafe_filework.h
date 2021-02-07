@@ -15,7 +15,6 @@ public:
 
     void push(const std::string& msg);
     std::string wait_and_pop();
-    //bool empty() const;
 
     threadsafe_filework(const threadsafe_filework&) = delete;
     threadsafe_filework(threadsafe_filework&&) = delete;

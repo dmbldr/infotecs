@@ -3,6 +3,7 @@
 #include <mutex>
 #include <string>
 
+//TODO: try_push
 void threadsafe_filework::push(const std::string& msg) {
     {   std::lock_guard<std::mutex> guard(_mtx);
         std::ofstream fout(_file_name);
@@ -25,10 +26,3 @@ std::string threadsafe_filework::wait_and_pop() {
     empty = true;
     return res;
 }
-
-/*bool threadsafe_filework::empty() const {
-    std::ifstream file(_file_name);
-    if(!file.is_open()) throw std::ios_base::failure("Error opening file: empty");
-    if(file.peek() == EOF) return true;
-    return false;
-}*/
