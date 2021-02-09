@@ -6,11 +6,11 @@ set(SOURCES
         main.cpp
         threadsafe_filework.cpp
         processor.cpp
-        network_connection.cpp)
+        network_connection_client.cpp)
 set(HEADERS
         threadsafe_filework.h
         processor.h
-        network_connection.h)
+        network_connection_client.h)
 
 add_executable(client ${SOURCES} ${HEADERS})
 

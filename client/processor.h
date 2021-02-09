@@ -1,7 +1,7 @@
 #pragma once
 
 #include "threadsafe_filework.h"
-#include "network_connection.h"
+#include "network_connection_client.h"
 
 #include <string>
 
@@ -19,5 +19,5 @@ public:
     void run_out_process() noexcept;
 private:
     threadsafe_filework _fworker;
-    network_connection _net;
+    network_connection_client _net;
 };

@@ -29,6 +29,7 @@ void processor::run_in_process() noexcept {
 
 void processor::run_out_process() noexcept{
     try {
+        //TODO: корректное завершение при отключении сервера
         _net.connect_with_server();
         while (true) {
             try {

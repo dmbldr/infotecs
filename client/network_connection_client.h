@@ -8,9 +8,9 @@
 
 #include <string>
 
-class network_connection {
+class network_connection_client {
 public:
-    ~network_connection();
+    ~network_connection_client();
 
     void connect_with_server();
     void try_send(const std::string& msg) const;
@@ -18,6 +18,6 @@ private:
     int sockfd;
     struct sockaddr_in server_address;
 
-    static const unsigned DEF_PORT = 10001;
+    static const uint16_t DEF_PORT = 40001;
 };
 
