@@ -7,7 +7,7 @@ set(SOURCES
 set(HEADERS
         network_connection_server.h)
 
-add_executable(client ${SOURCES} ${HEADERS})
+add_executable(server ${SOURCES} ${HEADERS})
 
 set_target_properties(
         server PROPERTIES
