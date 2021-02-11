@@ -19,5 +19,4 @@ public:
     void run_out_process() noexcept;
 private:
     threadsafe_filework _fworker;
-    network_connection_client _net;
 };

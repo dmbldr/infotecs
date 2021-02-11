@@ -15,7 +15,7 @@ public:
     void connect_with_server();
     void try_send(const std::string& msg) const;
 private:
-    int sockfd;
+    int _sockfd;
     struct sockaddr_in server_address;
 
     static const uint16_t DEF_PORT = 40001;

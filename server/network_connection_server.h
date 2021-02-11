@@ -15,6 +15,7 @@ public:
     void connection_with_client();
     std::string recv();
 private:
+    char buffer[8];
     int socket_client;
     int socket_server;
     struct sockaddr_in server_addres;

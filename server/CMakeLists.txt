@@ -3,9 +3,11 @@ project(server)
 
 set(SOURCES
         main.cpp
-        network_connection_server.cpp)
+        network_connection_server.cpp
+        server_processor.cpp)
 set(HEADERS
-        network_connection_server.h)
+        network_connection_server.h
+        server_processor.h)
 
 add_executable(server ${SOURCES} ${HEADERS})
 
