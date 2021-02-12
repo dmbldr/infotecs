@@ -21,7 +21,7 @@ public:
     bool is_set() const;
 };
 
-thread_local interrupt_flag this_thread_interrupt_flag;
+inline thread_local interrupt_flag this_thread_interrupt_flag;
 void interruption_point();
 
 class interruptible_thread {

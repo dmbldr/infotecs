@@ -17,7 +17,7 @@ public:
     std::string read_message();
     unsigned get_sum(const std::string& msg);
 
-    void run_in_process() noexcept;
+    void run_in_process();
     void run_out_process() noexcept;
 private:
     threadsafe_filework _fworker;

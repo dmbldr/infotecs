@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <cctype>
 
-void processor::run_in_process() noexcept {
+void processor::run_in_process() {
     while(true) {
         try {
             interruption_point();
@@ -22,9 +22,13 @@ void processor::run_in_process() noexcept {
             msg = replace_string(msg);
             _fworker.push(msg);
         }
-        catch (const std::exception& e) {
+        catch (const std::invalid_argument& e) {
             std::cerr << e.what() << "\n";
         }
+        catch (thread_interrupted& e) {
+            throw;
+        }
+
     }
 }
 
@@ -46,7 +50,6 @@ void processor::run_out_process() noexcept{
     }
     catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
-        //raise(SIGINT);
     }
 }
 
