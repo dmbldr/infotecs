@@ -3,6 +3,10 @@
 #include <mutex>
 #include <string>
 
+threadsafe_filework::~threadsafe_filework() {
+    std::remove(_file_name.c_str());
+}
+
 //TODO: try_push
 void threadsafe_filework::push(const std::string& msg) {
     {   std::lock_guard<std::mutex> guard(_mtx);

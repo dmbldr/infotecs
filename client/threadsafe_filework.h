@@ -12,6 +12,7 @@
 class threadsafe_filework {
 public:
     explicit threadsafe_filework(std::string file_name = "buffer.txt") : _file_name(std::move(file_name)) {};
+    ~threadsafe_filework();
 
     void push(const std::string& msg);
     std::string wait_and_pop();

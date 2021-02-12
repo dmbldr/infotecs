@@ -1,16 +1,17 @@
 #include "processor.h"
 
+
 #include <iostream>
 #include <stdexcept>
 #include <algorithm>
 #include <cctype>
 
-#include <csignal>
-
 void processor::run_in_process() noexcept {
     while(true) {
         try {
+            interruption_point();
             std::string msg = read_message();
+            interruption_point();
             if(msg == "exit") {
                 _fworker.push("exit");
                 break;
@@ -30,28 +31,22 @@ void processor::run_in_process() noexcept {
 void processor::run_out_process() noexcept{
     try {
         //TODO: корректное завершение при отключении сервера
-        //TODO: зацикливается отправка на сервер при закрытии консоли
+        //TODO: зацикливается отправка на сервер при закрытии терминала клиента
         network_connection_client _net{};
         _net.connect_with_server();
         while (true) {
-            try {
-                std::string msg = _fworker.wait_and_pop();
-                if (msg == "exit") {
-                    _net.try_send("end");
-                    break;
-                }
-                std::cout << msg << '\n';
-                _net.try_send(std::to_string(get_sum(msg)));
+            std::string msg = _fworker.wait_and_pop();
+            if (msg == "exit") {
+                _net.try_send("end");
+                break;
             }
-            catch (const std::exception &e) {
-                std::cerr << e.what() << '\n';
-                //TODO: возможно убрать этот блок трайкэтч
-            }
+            std::cout << msg << '\n';
+            _net.try_send(std::to_string(get_sum(msg)));
         }
     }
     catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
-        raise(SIGINT);
+        //raise(SIGINT);
     }
 }
 
@@ -91,3 +86,4 @@ unsigned processor::get_sum(const std::string &msg) {
     }
     return res;
 }
+

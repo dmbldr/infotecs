@@ -2,8 +2,10 @@
 
 #include "threadsafe_filework.h"
 #include "network_connection_client.h"
+#include "interruptible_thread.h"
 
 #include <string>
+
 
 class processor {
 public:
@@ -20,3 +22,5 @@ public:
 private:
     threadsafe_filework _fworker;
 };
+
+
