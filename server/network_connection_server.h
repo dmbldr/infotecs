@@ -14,6 +14,8 @@ public:
 
     void connection_with_client();
     std::string recv();
+
+    void sig_handler(int signum) const;
 private:
     char buffer[8];
     int socket_client;

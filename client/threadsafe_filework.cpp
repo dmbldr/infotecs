@@ -4,12 +4,14 @@
 #include <string>
 
 threadsafe_filework::~threadsafe_filework() {
+    std::cout << "threadsafe_filework dstr\n";
     std::remove(_file_name.c_str());
 }
 
 //TODO: try_push
-void threadsafe_filework::push(const std::string& msg) {
+void threadsafe_filework::try_push(const std::string& msg) {
     {   std::lock_guard<std::mutex> guard(_mtx);
+        if(!empty) throw std::ios_base::failure("Error push in file: file not empty");
         std::ofstream fout(_file_name);
         if(!fout.is_open()) throw std::ios_base::failure("Error opening file: push");
         fout << msg;

@@ -23,7 +23,6 @@ void network_connection_client::connect_with_server() {
 }
 
 void network_connection_client::try_send(const std::string &msg) const {
-    //TODO: вместо <0 надо что-то другое? Что?
     if(send(_sockfd, msg.c_str(), msg.size(), 0) < 0)
         throw std::invalid_argument("Error send to server \"" + msg + "\"");
 }

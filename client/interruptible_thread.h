@@ -41,6 +41,7 @@ public:
         flag = p.get_future().get();
     }
     ~interruptible_thread() {
+        std::cout << "interruptible_thread dstr\n";
         if(internal_thread.joinable()) internal_thread.join();
     }
     void join();

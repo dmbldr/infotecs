@@ -12,36 +12,38 @@ void processor::run_in_process() {
             interruption_point();
             std::string msg = read_message();
             interruption_point();
-            if(msg == "exit") {
-                _fworker.push("exit");
+            if(msg == "^C") {
+                _fworker.try_push("^C");
                 break;
             }
             if(!check_size(msg)) throw std::invalid_argument("Message more than 64");
             if(!check_num(msg)) throw std::invalid_argument("Only numbers");
             std::sort(msg.rbegin(), msg.rend());
             msg = replace_string(msg);
-            _fworker.push(msg);
+            _fworker.try_push(msg);
         }
         catch (const std::invalid_argument& e) {
+            std::cerr << e.what() << "\n";
+        }
+        catch (const std::ios_base::failure& e) {
             std::cerr << e.what() << "\n";
         }
         catch (thread_interrupted& e) {
             throw;
         }
-
     }
 }
 
 void processor::run_out_process() noexcept{
     try {
-        //TODO: корректное завершение при отключении сервера
+        //TODO: надо отправить 2 пакета, прежде чем узнаем о закрытии сервера
         //TODO: зацикливается отправка на сервер при закрытии терминала клиента
         network_connection_client _net{};
         _net.connect_with_server();
         while (true) {
             std::string msg = _fworker.wait_and_pop();
-            if (msg == "exit") {
-                _net.try_send("end");
+            if (msg == "^C") {
+                _net.try_send("^C");
                 break;
             }
             std::cout << msg << '\n';
