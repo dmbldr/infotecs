@@ -4,7 +4,6 @@
 #include <string>
 
 threadsafe_filework::~threadsafe_filework() {
-    std::cout << "threadsafe_filework dstr\n";
     std::remove(_file_name.c_str());
 }
 

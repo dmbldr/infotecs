@@ -5,9 +5,7 @@
 #include <cstring>
 #include <fcntl.h>
 
-//TODO: нужна ли проверка на socket >= 0 ?
 network_connection_server::~network_connection_server() {
-    std::cout << "close socket\n";
     std::cout << shutdown(socket_client, 2);
     std::cout << shutdown(socket_server, 2);
     close(socket_client);

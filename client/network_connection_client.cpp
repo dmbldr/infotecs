@@ -1,11 +1,10 @@
 #include "network_connection_client.h"
 
 #include <stdexcept>
-#include <iostream>
+
 //TODO: свои исключения для сетевых ошибок
 
 network_connection_client::~network_connection_client() {
-    std::cout << "socket close\n";
     shutdown(_sockfd, 2);
     close(_sockfd);
 }
