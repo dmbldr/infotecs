@@ -1,26 +1,47 @@
 #include "processor.h"
 
-
 #include <iostream>
 #include <stdexcept>
 #include <algorithm>
 #include <cctype>
+#include <csignal>
+#include <cstring>
+
+volatile sig_atomic_t caught_signum = 0;
+
+void handler(int signum) {
+    caught_signum = signum;
+}
+
+bool inputAvailable() {
+    struct timeval tv{};
+    fd_set fds;
+    tv.tv_sec = 0;
+    tv.tv_usec = 100000;
+    FD_ZERO(&fds);
+    FD_SET(STDIN_FILENO, &fds);
+    select(STDIN_FILENO+1, &fds, nullptr, nullptr, &tv);
+    return (FD_ISSET(0, &fds));
+}
 
 void processor::run_in_process() {
-    while(true) {
+    while(caught_signum == 0) {
         try {
+            std::string msg;
             interruption_point();
-            std::string msg = read_message();
+            if(inputAvailable()) msg = read_message();
             interruption_point();
-            if(msg == "^C") {
-                _fworker.try_push("^C");
-                break;
+            if(!msg.empty()) {
+                if (msg == "exit") {
+                    _fworker.try_push("exit");
+                    break;
+                }
+                if (!check_size(msg)) throw std::invalid_argument("Message more than 64");
+                if (!check_num(msg)) throw std::invalid_argument("Only numbers");
+                std::sort(msg.rbegin(), msg.rend());
+                msg = replace_string(msg);
+                _fworker.try_push(msg);
             }
-            if(!check_size(msg)) throw std::invalid_argument("Message more than 64");
-            if(!check_num(msg)) throw std::invalid_argument("Only numbers");
-            std::sort(msg.rbegin(), msg.rend());
-            msg = replace_string(msg);
-            _fworker.try_push(msg);
         }
         catch (const std::invalid_argument& e) {
             std::cerr << e.what() << "\n";
@@ -32,18 +53,27 @@ void processor::run_in_process() {
             throw;
         }
     }
+    if(caught_signum != 0) _fworker.try_push("exit");
 }
 
 void processor::run_out_process() noexcept{
+    struct sigaction act{};
+    std::memset(&act, 0, sizeof(act));
+    act.sa_handler = handler;
+    act.sa_flags = SA_RESTART;
+    sigaction(SIGTERM, &act, nullptr);
+    sigaction(SIGINT, &act, nullptr);
+    sigaction(SIGQUIT, &act, nullptr);
+
     try {
         //TODO: надо отправить 2 пакета, прежде чем узнаем о закрытии сервера
-        //TODO: зацикливается отправка на сервер при закрытии терминала клиента
         network_connection_client _net{};
         _net.connect_with_server();
-        while (true) {
+        while (caught_signum == 0) {
             std::string msg = _fworker.wait_and_pop();
-            if (msg == "^C") {
-                _net.try_send("^C");
+            if(caught_signum != 0) break;
+            if (msg == "exit") {
+                _net.try_send("end");
                 break;
             }
             std::cout << msg << '\n';

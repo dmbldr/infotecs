@@ -15,11 +15,10 @@ public:
     void connection_with_client();
     std::string recv();
 
-    void sig_handler(int signum) const;
+    int socket_client = -1;
+    int socket_server = -1;
 private:
     char buffer[8];
-    int socket_client;
-    int socket_server;
     struct sockaddr_in server_addres;
 
     static const uint16_t DEF_PORT = 40001;

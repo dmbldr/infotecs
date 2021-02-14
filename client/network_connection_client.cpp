@@ -3,10 +3,10 @@
 #include <stdexcept>
 #include <iostream>
 //TODO: свои исключения для сетевых ошибок
-//TODO: нужна ли обработка errno?
 
 network_connection_client::~network_connection_client() {
     std::cout << "socket close\n";
+    shutdown(_sockfd, 2);
     close(_sockfd);
 }
 
@@ -23,6 +23,9 @@ void network_connection_client::connect_with_server() {
 }
 
 void network_connection_client::try_send(const std::string &msg) const {
-    if(send(_sockfd, msg.c_str(), msg.size(), 0) < 0)
+    const char *line = msg.c_str();
+    if(write(_sockfd, line, 1) < 0)
+        throw std::invalid_argument("Error send to server \"" + msg + "\"");
+    if(write(_sockfd, line+1, msg.size()-1) < 0)
         throw std::invalid_argument("Error send to server \"" + msg + "\"");
 }

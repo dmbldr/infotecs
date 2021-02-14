@@ -8,7 +8,6 @@
 #include <string>
 #include <utility>
 
-
 class threadsafe_filework {
 public:
     explicit threadsafe_filework(std::string file_name = "buffer.txt") : _file_name(std::move(file_name)) {};
