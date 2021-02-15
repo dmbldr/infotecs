@@ -13,10 +13,10 @@ public:
     ~network_connection_client();
 
     void connect_with_server();
-    void try_send(const std::string& msg) const;
+    void try_send(std::string const& msg) const;
 private:
     int _sockfd;
-    struct sockaddr_in server_address;
+    struct sockaddr_in _server_address;
 
     static const uint16_t DEF_PORT = 40001;
 };

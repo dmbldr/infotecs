@@ -66,7 +66,6 @@ void processor::run_out_process() noexcept{
     sigaction(SIGQUIT, &act, nullptr);
 
     try {
-        //TODO: надо отправить 2 пакета, прежде чем узнаем о закрытии сервера
         network_connection_client _net{};
         _net.connect_with_server();
         while (caught_signum == 0) {
@@ -86,11 +85,11 @@ void processor::run_out_process() noexcept{
 }
 
 
-bool processor::check_size(const std::string &msg) noexcept {
+bool processor::check_size(std::string const& msg) noexcept {
     return msg.size() < 64;
 }
 
-bool processor::check_num(const std::string &msg) noexcept {
+bool processor::check_num(std::string const& msg) noexcept {
     return msg.find_first_not_of("0123456789") == std::string::npos;
 }
 
@@ -98,7 +97,7 @@ bool processor::is_even(char number) noexcept {
     return (static_cast<int>(number) - 48) % 2 == 0;
 }
 
-std::string processor::replace_string(const std::string &msg) {
+std::string processor::replace_string(std::string const& msg) {
     std::string res;
     for(char c : msg) {
         if(is_even(c)) res += "KB";
@@ -114,7 +113,7 @@ std::string processor::read_message() {
     return res;
 }
 
-unsigned processor::get_sum(const std::string &msg) {
+unsigned processor::get_sum(std::string const& msg) {
     unsigned res = 0;
     for(char c : msg) {
         if(std::isdigit(static_cast<unsigned char>(c))) res += static_cast<unsigned>(c) - 48;

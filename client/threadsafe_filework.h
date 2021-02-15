@@ -24,5 +24,5 @@ private:
     mutable std::mutex _mtx;
     std::condition_variable _del_cond;
     std::string _file_name;
-    bool empty = true;
+    bool _empty = true;
 };

@@ -9,8 +9,13 @@
 
 class thread_interrupted : public std::exception {
 public:
-    bool t_interrupted;
-    thread_interrupted() : t_interrupted{ true } {}
+    explicit thread_interrupted(std::string error) : _error(std::move(error)) {}
+
+    const char* what() const noexcept override {
+        return _error.c_str();
+    }
+private:
+    std::string _error;
 };
 
 class interrupt_flag {
@@ -21,7 +26,13 @@ public:
     bool is_set() const;
 };
 
-inline thread_local interrupt_flag this_thread_interrupt_flag;
+
+inline interrupt_flag& this_thread_interrupt_flag() {
+    static thread_local interrupt_flag tmp;
+    return tmp;
+}
+
+//inline thread_local interrupt_flag this_thread_interrupt_flag;
 void interruption_point();
 
 class interruptible_thread {
@@ -30,7 +41,7 @@ public:
     interruptible_thread(F function, T instance) {
         std::promise<interrupt_flag*> p;
         internal_thread = std::thread([function, instance, &p] {
-            p.set_value(&this_thread_interrupt_flag);
+            p.set_value(&this_thread_interrupt_flag());
             try {
                 (instance.get().*function)();
             }
@@ -41,10 +52,9 @@ public:
         flag = p.get_future().get();
     }
     ~interruptible_thread() {
-        if(internal_thread.joinable()) internal_thread.join();
+        if(joinable()) join();
     }
     void join();
-    void detach();
     bool joinable() const;
     void interrupt();
 private:

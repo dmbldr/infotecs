@@ -9,16 +9,15 @@
 
 class processor {
 public:
-
-    bool check_size(const std::string& msg) noexcept;
-    bool check_num(const std::string& msg) noexcept;
-    bool is_even(char number) noexcept;
-    std::string replace_string(const std::string& msg);
-    static std::string read_message();
-    unsigned get_sum(const std::string& msg);
-
     void run_in_process();
     void run_out_process() noexcept;
+
+    bool check_size(std::string const& msg) noexcept;
+    bool check_num(std::string const& msg) noexcept;
+    bool is_even(char number) noexcept;
+    std::string replace_string(std::string const& msg);
+    static std::string read_message();
+    unsigned get_sum(std::string const& msg);
 private:
     threadsafe_filework _fworker;
 };
