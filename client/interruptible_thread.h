@@ -32,7 +32,6 @@ inline interrupt_flag& this_thread_interrupt_flag() {
     return tmp;
 }
 
-//inline thread_local interrupt_flag this_thread_interrupt_flag;
 void interruption_point();
 
 class interruptible_thread {

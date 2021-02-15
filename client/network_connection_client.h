@@ -8,6 +8,17 @@
 
 #include <string>
 
+class network_exception : public std::exception {
+public:
+    explicit network_exception(std::string error) : _error(std::move(error)) {}
+
+    const char* what() const noexcept override {
+        return _error.c_str();
+    }
+private:
+    std::string _error;
+};
+
 class network_connection_client {
 public:
     ~network_connection_client();

@@ -70,7 +70,6 @@ void processor::run_out_process() noexcept{
         _net.connect_with_server();
         while (caught_signum == 0) {
             std::string msg = _fworker.wait_and_pop();
-            if(caught_signum != 0) break;
             if (msg == "exit") {
                 _net.try_send("end");
                 break;

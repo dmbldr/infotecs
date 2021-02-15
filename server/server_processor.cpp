@@ -35,13 +35,13 @@ void server_processor::run() {
             FD_SET(net.socket_client, &readset);
             struct timeval timeout{};
             timeout.tv_sec = 0;
-            timeout.tv_usec = 100000;
+            timeout.tv_usec = 200000; //200 мс
             if(select(std::max(net.socket_server, net.socket_client) + 1, &readset, nullptr, nullptr, &timeout) == -1)
-                throw std::invalid_argument("select()");
+                throw network_exception("Error: select");
             if(FD_ISSET(net.socket_server, &readset)) {
                 net.socket_client = accept(net.socket_server, nullptr, nullptr);
                 if(net.socket_client == -1)
-                    throw std::invalid_argument("Error create client socket descriptor\n");
+                    throw network_exception("Error create client socket descriptor\n");
                 fcntl(net.socket_client, F_SETFL, O_NONBLOCK);
                 std::cout << "Client connected\n";
             }
