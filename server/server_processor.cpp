@@ -35,7 +35,7 @@ void server_processor::run() {
             FD_SET(net.socket_client, &readset);
             struct timeval timeout{};
             timeout.tv_sec = 0;
-            timeout.tv_usec = 200000; //200 мс
+            timeout.tv_usec = 200000;
             if(select(std::max(net.socket_server, net.socket_client) + 1, &readset, nullptr, nullptr, &timeout) == -1)
                 throw network_exception("Error: select");
             if(FD_ISSET(net.socket_server, &readset)) {
